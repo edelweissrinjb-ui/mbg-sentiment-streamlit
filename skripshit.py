@@ -82,13 +82,37 @@ def load_model():
 def load_data():
     return pd.read_csv("youtube_data_fix.csv")
 
-model, tfidf = load_model()
-df = load_data()
+st.write("✅ App started")
 
+# ===============================
+# LOAD MODEL (AMAN UNTUK CLOUD)
+# ===============================
+try:
+    model, tfidf = load_model()
+    st.write("✅ Model loaded")
+except Exception as e:
+    st.error("❌ Model gagal dimuat di server")
+    st.error(e)
+    st.stop()
+
+# ===============================
+# LOAD DATA
+# ===============================
+try:
+    df = load_data()
+    st.write("✅ Data loaded, jumlah:", len(df))
+except Exception as e:
+    st.error("❌ Dataset gagal dimuat")
+    st.error(e)
+    st.stop()
+
+# ===============================
+# CLEAN LABEL
+# ===============================
 df["label"] = pd.to_numeric(df["label"], errors="coerce")
 df = df[df["label"].notna()]
 df["label"] = df["label"].astype(int)
-
+st.write("✅ Label cleaned")
 
 # ===============================
 # RINGKASAN DATASET
@@ -260,4 +284,16 @@ Keterbatasan Model:
 - Analisis hanya mencakup dua kelas sentimen (positif dan negatif)
 - Tidak mempertimbangkan konteks sarkasme atau ironi
 """)
+st.write("✅ App started")
+
+model, tfidf = load_model()
+st.write("✅ Model loaded")
+
+df = load_data()
+st.write("✅ Data loaded, jumlah:", len(df))
+
+df["label"] = pd.to_numeric(df["label"], errors="coerce")
+df = df[df["label"].notna()]
+df["label"] = df["label"].astype(int)
+st.write("✅ Label cleaned")
 
