@@ -80,7 +80,7 @@ def load_model():
 
 @st.cache_data
 def load_data():
-    return pd.read_csv("youtube_data_fix.csv")
+    return pd.read_csv("datafinal_youtube_data.csv")
 
 st.write("✅ App started")
 
@@ -115,15 +115,6 @@ df["label"] = df["label"].astype(int)
 st.write("✅ Label cleaned")
 
 # ===============================
-# RINGKASAN DATASET
-# ===============================
-st.subheader("📌 Ringkasan Dataset")
-
-col1, col2, col3 = st.columns(3)
-
-col1.metric("Total Data", len(df))
-col2.metric("Sentimen Negatif (0)", (df["label"] == 0).sum())
-col3.metric("Sentimen Positif (1)", (df["label"] == 1).sum())
 
 
 THRESHOLDS = [0.11, 0.30, 0.50, 0.70, 0.90]
@@ -296,4 +287,5 @@ df["label"] = pd.to_numeric(df["label"], errors="coerce")
 df = df[df["label"].notna()]
 df["label"] = df["label"].astype(int)
 st.write("✅ Label cleaned")
+
 
