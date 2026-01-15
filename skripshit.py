@@ -169,10 +169,10 @@ dalam menganalisis sentimen komentar YouTube terkait
 st.subheader("📂 Dataset Berdasarkan Label")
 
 with st.expander("🔴 Lihat Data Sentimen Negatif (Label 0)"):
-    st.dataframe(df[df["label"] == 0][["cleaned_comment", "label"]].head(10))
+    st.dataframe(df[df["label"] == 0][["clean_text", "label"]].head(15))
 
 with st.expander("🟢 Lihat Data Sentimen Positif (Label 1)"):
-    st.dataframe(df[df["label"] == 1][["cleaned_comment", "label"]].head(10))
+    st.dataframe(df[df["label"] == 1][["clean_text", "label"]].head(15))
 
 # ===============================
 # DISTRIBUSI DATA
@@ -287,5 +287,6 @@ df["label"] = pd.to_numeric(df["label"], errors="coerce")
 df = df[df["label"].notna()]
 df["label"] = df["label"].astype(int)
 st.write("✅ Label cleaned")
+
 
 
