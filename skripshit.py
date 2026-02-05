@@ -133,10 +133,6 @@ with st.expander("🟢 Contoh Sentimen Positif"):
         df[df["label"] == 1][["clean_text_expanded", "label"]].head(10)
     )
 
-# ===============================
-# PENJELASAN SMOTE (TANPA VISUAL)
-# ===============================
-st.subheader("📌 Penanganan Data Tidak Seimbang")
 
 # ===============================
 # PREDIKSI KOMENTAR
@@ -197,4 +193,5 @@ Keterbatasan:
 - Hanya dua kelas sentimen
 - Belum menangani sarkasme
 """)
+
 
