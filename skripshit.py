@@ -4,7 +4,7 @@ import joblib
 import re
 
 # ===============================
-# KONFIGURASI HALAMAN 
+# KONFIGURASI HALAMAN
 # ===============================
 st.set_page_config(
     page_title="Analisis Sentimen MBG",
@@ -20,7 +20,7 @@ st.markdown(
         font-family: "Segoe UI", sans-serif;
     }
     .block-container {
-        background-color: rgba(255, 255, 255, 0.85);
+        background-color: rgba(255, 255, 255, 0.9);
         padding: 2rem;
         border-radius: 16px;
     }
@@ -41,13 +41,6 @@ st.markdown(
     textarea {
         border-radius: 12px !important;
         border: 1px solid #f9a8d4 !important;
-    }
-    .stDataFrame {
-        border-radius: 12px;
-        overflow: hidden;
-    }
-    .stAlert {
-        border-radius: 12px;
     }
     </style>
     """,
@@ -70,22 +63,16 @@ def load_data():
 # ===============================
 # INIT
 # ===============================
-st.write("✅ App started")
-
 try:
     model, tfidf = load_model()
-    st.write("✅ Model loaded")
 except Exception as e:
     st.error("❌ Model gagal dimuat")
-    st.error(e)
     st.stop()
 
 try:
     df = load_data()
-    st.write("✅ Data loaded, jumlah:", len(df))
 except Exception as e:
     st.error("❌ Dataset gagal dimuat")
-    st.error(e)
     st.stop()
 
 # ===============================
@@ -96,7 +83,7 @@ df = df[df["label"].notna()]
 df["label"] = df["label"].astype(int)
 
 # ===============================
-# PREPROCESSING INPUT USER
+# PREPROCESSING
 # ===============================
 abbreviations = {
     'yg': 'yang',
@@ -104,16 +91,10 @@ abbreviations = {
     'ga': 'tidak',
     'dlm': 'dalam',
     'bgt': 'banget',
-    'tgl': 'tanggal',
     'utk': 'untuk',
     'sdh': 'sudah',
-    'gakpapa': 'tidak apa-apa',
     'krn': 'karena',
-    'cm': 'cuman',
-    'trus': 'terus',
-    'pa': 'pak',
-    'drugikan': 'dirugikan',
-    'bubiar': 'bubar'
+    'trus': 'terus'
 }
 
 def clean_text(text):
@@ -131,56 +112,49 @@ def replace_abbreviations(text):
 st.title("📊 Analisis Sentimen Program Makanan Bergizi (MBG)")
 
 st.write("""
-Dashboard ini menampilkan hasil implementasi **Logistic Regression**
-dalam menganalisis sentimen komentar YouTube terkait
-**Program Makanan Bergizi (MBG)** dengan pendekatan
-**SMOTE dan threshold tuning**.
+Aplikasi ini menampilkan hasil implementasi **Logistic Regression**
+untuk menganalisis sentimen komentar YouTube terkait
+**Program Makanan Bergizi (MBG)** menggunakan pendekatan
+**threshold tuning** pada model yang telah dilatih.
 """)
 
 # ===============================
-# DATASET BERDASARKAN LABEL
+# DATASET CONTOH
 # ===============================
-st.subheader("📂 Dataset Berdasarkan Label")
+st.subheader("📂 Contoh Dataset Berdasarkan Label")
 
-with st.expander("🔴 Lihat Data Sentimen Negatif (Label 0)"):
+with st.expander("🔴 Contoh Sentimen Negatif"):
     st.dataframe(
-        df[df["label"] == 0][["clean_text_expanded", "label"]].head(15)
+        df[df["label"] == 0][["clean_text_expanded", "label"]].head(10)
     )
 
-with st.expander("🟢 Lihat Data Sentimen Positif (Label 1)"):
+with st.expander("🟢 Contoh Sentimen Positif"):
     st.dataframe(
-        df[df["label"] == 1][["clean_text_expanded", "label"]].head(15)
+        df[df["label"] == 1][["clean_text_expanded", "label"]].head(10)
     )
 
 # ===============================
-# DISTRIBUSI DATA
+# PENJELASAN SMOTE (TANPA VISUAL)
 # ===============================
-st.subheader("📈 Distribusi Kelas Sentimen (Sebelum SMOTE)")
-st.bar_chart(df["label"].value_counts())
+st.subheader("📌 Penanganan Data Tidak Seimbang")
 
-st.caption("Dataset tidak seimbang sehingga digunakan metode SMOTE.")
+st.write("""
+Pada tahap **pelatihan model (offline)**, dataset yang tidak seimbang
+ditangani menggunakan metode **SMOTE** untuk meningkatkan kemampuan
+model dalam mengenali kelas minoritas.
 
-# ===============================
-# DISTRIBUSI SETELAH SMOTE
-# ===============================
-st.subheader("📊 Distribusi Kelas Sentimen (Setelah SMOTE)")
-
-max_count = df["label"].value_counts().max()
-smote_dist = pd.DataFrame({
-    "label": ["Negatif (0)", "Positif (1)"],
-    "Jumlah Data": [max_count, max_count]
-})
-
-st.bar_chart(smote_dist.set_index("label"))
+Pada aplikasi ini, pengguna hanya ditampilkan **hasil prediksi akhir**
+tanpa visualisasi proses penyeimbangan data.
+""")
 
 # ===============================
 # PREDIKSI KOMENTAR
 # ===============================
-st.subheader("📝 Prediksi Sentimen Komentar MBG")
+st.subheader("📝 Prediksi Sentimen Komentar")
 
 input_text = st.text_area(
     "Masukkan komentar terkait Program Makanan Bergizi:",
-    placeholder="Contoh: Program ini sangat membantu anak-anak sekolah..."
+    placeholder="Contoh: Program ini sangat membantu anak-anak sekolah"
 )
 
 if st.button("🔍 Prediksi Sentimen"):
@@ -195,19 +169,19 @@ if st.button("🔍 Prediksi Sentimen"):
 
         final_label = "Positif" if prob >= 0.30 else "Negatif"
 
-        st.subheader("📌 Kesimpulan Akhir")
+        st.subheader("📌 Hasil Klasifikasi")
         if final_label == "Positif":
-            st.success("✅ Komentar diklasifikasikan sebagai **SENTIMEN POSITIF** (threshold 0.30)")
+            st.success("✅ Komentar diklasifikasikan sebagai **SENTIMEN POSITIF**")
         else:
-            st.error("❌ Komentar diklasifikasikan sebagai **SENTIMEN NEGATIF** (threshold 0.30)")
+            st.error("❌ Komentar diklasifikasikan sebagai **SENTIMEN NEGATIF**")
 
-        thresholds = [0.11, 0.30, 0.50, 0.70, 0.90]
+        thresholds = [0.11, 0.30, 0.50]
         results = [{
             "Threshold": t,
-            "Hasil Klasifikasi": "Positif" if prob >= t else "Negatif"
+            "Hasil": "Positif" if prob >= t else "Negatif"
         } for t in thresholds]
 
-        st.subheader("📊 Perbandingan Hasil Berdasarkan Threshold")
+        st.subheader("📊 Perbandingan Threshold")
         st.table(pd.DataFrame(results))
 
 # ===============================
@@ -217,7 +191,7 @@ st.subheader("ℹ️ Informasi Model")
 
 st.write("""
 - **Algoritma**: Logistic Regression  
-- **Penanganan Data Tidak Seimbang**: SMOTE  
+- **Pendekatan**: TF-IDF & Threshold Tuning  
 - **Threshold Optimal**: 0.30  
 """)
 
@@ -228,7 +202,7 @@ Keterangan Label:
 """)
 
 st.warning("""
-Keterbatasan Model:
+Keterbatasan:
 - Hanya dua kelas sentimen
-- Belum menangani sarkasme atau ironi
+- Belum menangani sarkasme
 """)
