@@ -162,7 +162,7 @@ if st.button("🔍 Prediksi Sentimen"):
         else:
             st.error("❌ Komentar diklasifikasikan sebagai **SENTIMEN NEGATIF**")
 
-        thresholds = [0.11, 0.30, 0.50]
+        thresholds = [0.11, 0.30, 0.50, 0.70, 0.90]
         results = [{
             "Threshold": t,
             "Hasil": "Positif" if prob >= t else "Negatif"
@@ -193,5 +193,6 @@ Keterbatasan:
 - Hanya dua kelas sentimen
 - Belum menangani sarkasme
 """)
+
 
 
