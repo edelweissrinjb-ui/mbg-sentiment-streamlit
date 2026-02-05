@@ -138,15 +138,6 @@ with st.expander("🟢 Contoh Sentimen Positif"):
 # ===============================
 st.subheader("📌 Penanganan Data Tidak Seimbang")
 
-st.write("""
-Pada tahap **pelatihan model (offline)**, dataset yang tidak seimbang
-ditangani menggunakan metode **SMOTE** untuk meningkatkan kemampuan
-model dalam mengenali kelas minoritas.
-
-Pada aplikasi ini, pengguna hanya ditampilkan **hasil prediksi akhir**
-tanpa visualisasi proses penyeimbangan data.
-""")
-
 # ===============================
 # PREDIKSI KOMENTAR
 # ===============================
@@ -206,3 +197,4 @@ Keterbatasan:
 - Hanya dua kelas sentimen
 - Belum menangani sarkasme
 """)
+
